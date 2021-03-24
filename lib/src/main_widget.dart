@@ -72,6 +72,7 @@ class _IndependentLocalizationWidgetState
   Future<void> loadLocales() async {
     Logger.log("[i] Loading Locales...");
     if (widget.localesJson != null && widget.localesJson.isNotEmpty) {
+      IndependentLocalizationWidget._decodedLocaleJson = {};
       for (var j in widget.localesJson.entries) {
         IndependentLocalizationWidget._decodedLocaleJson[j.key] =
             jsonDecode(j.value);
