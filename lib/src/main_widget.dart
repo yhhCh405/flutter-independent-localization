@@ -33,6 +33,9 @@ class IndependentLocalization {
 
   static Locale get currentLocale => _currentLocale;
 
+  static IndependentLocalization _instance;
+  static IndependentLocalization get instance => _instance;
+
   static Map<Locale, Map<String, dynamic>> _decodedLocaleJson;
   static Locale _currentLocale;
   static Locale _fallbackLocale;
@@ -72,7 +75,8 @@ class IndependentLocalization {
         _currentLocale = Locale('en', 'US');
       }
     }
-    return this;
+    _instance = this;
+    return _instance;
   }
 
   static changeLocale(Locale locale) {
