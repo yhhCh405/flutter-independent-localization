@@ -11,7 +11,7 @@ import 'package:independent_localization/src/logger.dart';
 
 String tr(String key, [String defaultValue]) {
   String translated;
-  if(!IndependentLocalizationWidget._loadedLocales) {
+  if (!IndependentLocalizationWidget._loadedLocales) {
     Logger.log("[i] Localization currently not ready. Returned key instead.");
     return defaultValue ?? key;
   }
@@ -78,18 +78,26 @@ class _IndependentLocalizationWidgetState
       }
     }
     Logger.log("[i] Loading fallback Locale...");
-    if (widget.fallbackLocale == null)
+    if (widget.fallbackLocale == null &&
+        IndependentLocalizationWidget._decodedLocaleJson != null &&
+        IndependentLocalizationWidget._decodedLocaleJson.isNotEmpty)
       IndependentLocalizationWidget._fallbackLocale =
           IndependentLocalizationWidget._decodedLocaleJson.entries.first.key;
 
     Logger.log("[i] Determining current Locale...");
     if (IndependentLocalizationWidget._currentLocale == null) {
       final Locale l = await Devicelocale.currentAsLocale;
-      if (!IndependentLocalizationWidget._decodedLocaleJson.keys.contains(l)) {
-        IndependentLocalizationWidget._currentLocale =
-            IndependentLocalizationWidget._fallbackLocale;
+      if (IndependentLocalizationWidget._decodedLocaleJson != null &&
+          IndependentLocalizationWidget._decodedLocaleJson.isNotEmpty) {
+        if (!IndependentLocalizationWidget._decodedLocaleJson.keys
+            .contains(l)) {
+          IndependentLocalizationWidget._currentLocale =
+              IndependentLocalizationWidget._fallbackLocale;
+        } else {
+          IndependentLocalizationWidget._currentLocale = l;
+        }
       } else {
-        IndependentLocalizationWidget._currentLocale = l;
+        IndependentLocalizationWidget._currentLocale = Locale('en','US');
       }
     }
     IndependentLocalizationWidget._loadedLocales = true;
