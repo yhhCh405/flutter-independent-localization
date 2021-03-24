@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:independent_localization/src/Exceptions/language_not_defined_exception.dart';
 import 'package:independent_localization/src/config.dart';
 import 'package:independent_localization/src/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 String tr(String key, [String defaultValue]) {
   String translated;
@@ -40,6 +41,8 @@ class IndependentLocalization {
   static Locale _currentLocale;
   static Locale _fallbackLocale;
 
+  SharedPreferences pref;
+
   IndependentLocalization({
     this.localesJson,
     this.openLogChannel,
@@ -49,6 +52,7 @@ class IndependentLocalization {
   }
 
   Future<IndependentLocalization> initialize() async {
+    pref = await SharedPreferences.getInstance();
     Logger.log("[i] Loading Locales...");
     if (localesJson != null && localesJson.isNotEmpty) {
       _decodedLocaleJson = {};
@@ -64,15 +68,21 @@ class IndependentLocalization {
 
     Logger.log("[i] Determining current Locale...");
     if (_currentLocale == null) {
-      final Locale l = await Devicelocale.currentAsLocale;
-      if (_decodedLocaleJson != null && _decodedLocaleJson.isNotEmpty) {
-        if (!_decodedLocaleJson.keys.contains(l)) {
-          _currentLocale = _fallbackLocale;
-        } else {
-          _currentLocale = l;
-        }
+      String curLangCode = pref.getString("curLangCode");
+      String curCtryCode = pref.getString("curCtryCode");
+      if (curLangCode != null) {
+        _currentLocale = Locale(curLangCode, curCtryCode);
       } else {
-        _currentLocale = Locale('en', 'US');
+        final Locale l = await Devicelocale.currentAsLocale;
+        if (_decodedLocaleJson != null && _decodedLocaleJson.isNotEmpty) {
+          if (!_decodedLocaleJson.keys.contains(l)) {
+            _currentLocale = _fallbackLocale;
+          } else {
+            _currentLocale = l;
+          }
+        } else {
+          _currentLocale = Locale('en', 'US');
+        }
       }
     }
     _instance = this;
@@ -80,9 +90,12 @@ class IndependentLocalization {
   }
 
   changeLocale(Locale locale) {
-    if (!_decodedLocaleJson.containsKey(locale))
+    if (!_decodedLocaleJson.containsKey(locale)) {
       throw LanguageNotDefinedException();
-    else
+    } else {
       _currentLocale = locale;
+      pref.setString("curLangCode", _currentLocale.languageCode);
+      pref.setString("curCtryCode", _currentLocale.countryCode);
+    }
   }
 }
