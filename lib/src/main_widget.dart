@@ -11,7 +11,7 @@ import 'package:independent_localization/src/logger.dart';
 
 String tr(String key, [String defaultValue]) {
   String translated;
-  if (!IndependentLocalizationWidget.loadedLocales) {
+  if (!IndependentLocalizationWidget._loadedLocales) {
     Logger.log("[i] Localization currently not ready. Returned key instead.");
     return defaultValue ?? key;
   }
@@ -52,7 +52,7 @@ class IndependentLocalizationWidget extends StatefulWidget {
   static Locale _currentLocale;
   static Locale _fallbackLocale;
 
-  static bool loadedLocales = false;
+  static bool _loadedLocales = false;
 
   IndependentLocalizationWidget(
       {this.localesJson,
@@ -100,7 +100,7 @@ class _IndependentLocalizationWidgetState
         IndependentLocalizationWidget._currentLocale = Locale('en','US');
       }
     }
-    IndependentLocalizationWidget.loadedLocales = true;
+    IndependentLocalizationWidget._loadedLocales = true;
   }
 
   @override
