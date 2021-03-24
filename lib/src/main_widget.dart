@@ -40,13 +40,15 @@ class IndependentLocalizationWidget extends StatefulWidget {
   /// e.g: ```{
   ///       Locale('en','US'): await rootBundle.loadString(path)
   /// }```
-  final Map<Locale,String> localesJson;
+  final Map<Locale, String> localesJson;
 
   final bool openLogChannel;
 
   final Locale fallbackLocale;
 
   final Widget child;
+
+  static Locale get currentLocale => _currentLocale;
 
   static Map<Locale, Map<String, dynamic>> _decodedLocaleJson;
   static Locale _currentLocale;
@@ -98,7 +100,7 @@ class _IndependentLocalizationWidgetState
           IndependentLocalizationWidget._currentLocale = l;
         }
       } else {
-        IndependentLocalizationWidget._currentLocale = Locale('en','US');
+        IndependentLocalizationWidget._currentLocale = Locale('en', 'US');
       }
     }
     IndependentLocalizationWidget._loadedLocales = true;
