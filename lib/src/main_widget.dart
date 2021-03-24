@@ -5,19 +5,11 @@ import 'package:independent_localization/src/Exceptions/language_not_defined_exc
 import 'package:independent_localization/src/config.dart';
 import 'package:independent_localization/src/logger.dart';
 
-// extension yhhContext on BuildContext {
-//   void trf() {}
-// }
-
 String tr(String key, [String defaultValue]) {
   String translated;
-  if (!IndependentLocalizationWidget._loadedLocales) {
-    Logger.log("[i] Localization currently not ready. Returned key instead.");
-    return defaultValue ?? key;
-  }
   try {
-    translated = IndependentLocalizationWidget
-        ._decodedLocaleJson[IndependentLocalizationWidget._currentLocale][key];
+    translated = IndependentLocalization
+        ._decodedLocaleJson[IndependentLocalization._currentLocale][key];
   } catch (e) {
     Logger.log('[E]' + e.toString());
   }
@@ -29,14 +21,7 @@ String tr(String key, [String defaultValue]) {
   }
 }
 
-changeLocale(Locale locale) {
-  if (!IndependentLocalizationWidget._decodedLocaleJson.containsKey(locale))
-    throw LanguageNotDefinedException();
-  else
-    IndependentLocalizationWidget._currentLocale = locale;
-}
-
-class IndependentLocalizationWidget extends StatefulWidget {
+class IndependentLocalization {
   /// e.g: ```{
   ///       Locale('en','US'): await rootBundle.loadString(path)
   /// }```
@@ -46,74 +31,53 @@ class IndependentLocalizationWidget extends StatefulWidget {
 
   final Locale fallbackLocale;
 
-  final Widget child;
-
   static Locale get currentLocale => _currentLocale;
 
   static Map<Locale, Map<String, dynamic>> _decodedLocaleJson;
   static Locale _currentLocale;
   static Locale _fallbackLocale;
 
-  static bool _loadedLocales = false;
-
-  IndependentLocalizationWidget(
-      {this.localesJson,
-      this.openLogChannel,
-      this.fallbackLocale,
-      this.child}) {
+  IndependentLocalization({
+    this.localesJson,
+    this.openLogChannel,
+    this.fallbackLocale,
+  }) {
     Config.openLogChannel = this.openLogChannel ?? true;
   }
 
-  @override
-  _IndependentLocalizationWidgetState createState() =>
-      _IndependentLocalizationWidgetState();
-}
-
-class _IndependentLocalizationWidgetState
-    extends State<IndependentLocalizationWidget> {
-  Future<void> loadLocales() async {
+  Future<void> initialize() async {
     Logger.log("[i] Loading Locales...");
-    if (widget.localesJson != null && widget.localesJson.isNotEmpty) {
-      IndependentLocalizationWidget._decodedLocaleJson = {};
-      for (var j in widget.localesJson.entries) {
-        IndependentLocalizationWidget._decodedLocaleJson[j.key] =
-            jsonDecode(j.value);
+    if (localesJson != null && localesJson.isNotEmpty) {
+      _decodedLocaleJson = {};
+      for (var j in localesJson.entries) {
+        _decodedLocaleJson[j.key] = jsonDecode(j.value);
       }
     }
     Logger.log("[i] Loading fallback Locale...");
-    if (widget.fallbackLocale == null &&
-        IndependentLocalizationWidget._decodedLocaleJson != null &&
-        IndependentLocalizationWidget._decodedLocaleJson.isNotEmpty)
-      IndependentLocalizationWidget._fallbackLocale =
-          IndependentLocalizationWidget._decodedLocaleJson.entries.first.key;
+    if (fallbackLocale == null &&
+        _decodedLocaleJson != null &&
+        _decodedLocaleJson.isNotEmpty)
+      _fallbackLocale = _decodedLocaleJson.entries.first.key;
 
     Logger.log("[i] Determining current Locale...");
-    if (IndependentLocalizationWidget._currentLocale == null) {
+    if (_currentLocale == null) {
       final Locale l = await Devicelocale.currentAsLocale;
-      if (IndependentLocalizationWidget._decodedLocaleJson != null &&
-          IndependentLocalizationWidget._decodedLocaleJson.isNotEmpty) {
-        if (!IndependentLocalizationWidget._decodedLocaleJson.keys
-            .contains(l)) {
-          IndependentLocalizationWidget._currentLocale =
-              IndependentLocalizationWidget._fallbackLocale;
+      if (_decodedLocaleJson != null && _decodedLocaleJson.isNotEmpty) {
+        if (!_decodedLocaleJson.keys.contains(l)) {
+          _currentLocale = _fallbackLocale;
         } else {
-          IndependentLocalizationWidget._currentLocale = l;
+          _currentLocale = l;
         }
       } else {
-        IndependentLocalizationWidget._currentLocale = Locale('en', 'US');
+        _currentLocale = Locale('en', 'US');
       }
     }
-    IndependentLocalizationWidget._loadedLocales = true;
   }
 
-  @override
-  void initState() {
-    loadLocales();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child ?? Container();
+  static changeLocale(Locale locale) {
+    if (!_decodedLocaleJson.containsKey(locale))
+      throw LanguageNotDefinedException();
+    else
+      _currentLocale = locale;
   }
 }
