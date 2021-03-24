@@ -1,0 +1,2 @@
+library independent_localization;
+
