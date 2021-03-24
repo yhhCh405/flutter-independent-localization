@@ -45,7 +45,7 @@ class IndependentLocalization {
     Config.openLogChannel = this.openLogChannel ?? true;
   }
 
-  Future<void> initialize() async {
+  Future<IndependentLocalization> initialize() async {
     Logger.log("[i] Loading Locales...");
     if (localesJson != null && localesJson.isNotEmpty) {
       _decodedLocaleJson = {};
@@ -72,6 +72,7 @@ class IndependentLocalization {
         _currentLocale = Locale('en', 'US');
       }
     }
+    return this;
   }
 
   static changeLocale(Locale locale) {
