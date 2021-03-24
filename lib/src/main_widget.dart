@@ -38,9 +38,9 @@ changeLocale(Locale locale) {
 
 class IndependentLocalizationWidget extends StatefulWidget {
   /// e.g: ```{
-  ///       Locale('en','US'):rootBundle.loadString(path)
+  ///       Locale('en','US'): await rootBundle.loadString(path)
   /// }```
-  final Map<Locale, Future<String>> localesJson;
+  final Map<Locale,String> localesJson;
 
   final bool openLogChannel;
 
@@ -74,7 +74,7 @@ class _IndependentLocalizationWidgetState
     if (widget.localesJson != null && widget.localesJson.isNotEmpty) {
       for (var j in widget.localesJson.entries) {
         IndependentLocalizationWidget._decodedLocaleJson[j.key] =
-            jsonDecode(await j.value);
+            jsonDecode(j.value);
       }
     }
     Logger.log("[i] Loading fallback Locale...");
