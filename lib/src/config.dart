@@ -1,3 +1,3 @@
 class Config{
-  static bool openLogChannel = true;
+  static bool openLogChannel = false;
 }

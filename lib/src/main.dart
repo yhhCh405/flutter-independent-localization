@@ -53,6 +53,8 @@ class IndependentLocalization {
   }
 
   Future<IndependentLocalization> initialize() async {
+    // ignore: invalid_use_of_visible_for_testing_member
+    SharedPreferences.setMockInitialValues({});
     pref = await SharedPreferences.getInstance();
     Logger.log("[i] Loading Locales...");
     if (localesJson != null && localesJson.isNotEmpty) {
