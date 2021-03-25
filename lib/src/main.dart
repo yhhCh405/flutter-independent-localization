@@ -9,8 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 String tr(String key, [String defaultValue]) {
   String translated;
   try {
-    translated = IndependentLocalization
-        ._decodedLocaleJson[IndependentLocalization._currentLocale][key];
+    translated = IndependentLocalization.instance
+            ._decodedLocaleJson[IndependentLocalization.instance._currentLocale]
+        [key];
   } catch (e) {
     Logger.log('[E]' + e.toString());
   }
@@ -32,14 +33,14 @@ class IndependentLocalization {
 
   final Locale fallbackLocale;
 
-  static Locale get currentLocale => _currentLocale;
+  Locale get currentLocale => _currentLocale;
 
   static IndependentLocalization _instance;
   static IndependentLocalization get instance => _instance;
 
-  static Map<Locale, Map<String, dynamic>> _decodedLocaleJson;
-  static Locale _currentLocale;
-  static Locale _fallbackLocale;
+  Map<Locale, Map<String, dynamic>> _decodedLocaleJson;
+  Locale _currentLocale;
+  Locale _fallbackLocale;
 
   SharedPreferences pref;
 
