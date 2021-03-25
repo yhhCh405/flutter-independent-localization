@@ -90,7 +90,7 @@ class IndependentLocalization {
     return _instance;
   }
 
-  changeLocale(Locale locale) {
+  void changeLocale(Locale locale) {
     if (!_decodedLocaleJson.containsKey(locale)) {
       throw LanguageNotDefinedException();
     } else {
