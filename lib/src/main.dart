@@ -76,7 +76,13 @@ class IndependentLocalization {
       if (curLangCode != null) {
         _currentLocale = Locale(curLangCode, curCtryCode);
       } else {
-        final Locale l = await Devicelocale.currentAsLocale;
+        Locale l;
+        try {
+          l = await Devicelocale.currentAsLocale;
+        } catch (e) {}
+        if (l == null) {
+          l = Locale("en", "US");
+        }
         if (_decodedLocaleJson != null && _decodedLocaleJson.isNotEmpty) {
           if (!_decodedLocaleJson.keys.contains(l)) {
             _currentLocale = _fallbackLocale;
