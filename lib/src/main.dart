@@ -64,7 +64,9 @@ class IndependentLocalization {
       }
     }
     Logger.log("[i] Loading fallback Locale...");
-    if (fallbackLocale == null &&
+    if (fallbackLocale != null) {
+      _fallbackLocale = fallbackLocale;
+    } else if (fallbackLocale == null &&
         _decodedLocaleJson != null &&
         _decodedLocaleJson.isNotEmpty)
       _fallbackLocale = _decodedLocaleJson.entries.first.key;
