@@ -1,4 +1,4 @@
 class LanguageNotDefinedException implements Exception {
-  String msg;
+  String? msg;
   LanguageNotDefinedException([this.msg]);
 }
