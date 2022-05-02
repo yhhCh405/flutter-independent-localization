@@ -9,9 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 String tr(String key, [String? defaultValue]) {
   String? translated;
   try {
-    translated = IndependentLocalization.instance!
-            ._decodedLocaleJson![IndependentLocalization.instance!._currentLocale!]!
-        [key];
+    translated = IndependentLocalization.instance!._decodedLocaleJson![
+        IndependentLocalization.instance!._currentLocale!]![key];
   } catch (e) {
     Logger.log('[E]' + e.toString());
   }
@@ -20,6 +19,24 @@ String tr(String key, [String? defaultValue]) {
     return defaultValue ?? key;
   } else {
     return translated;
+  }
+}
+
+extension TrExt on String {
+  String get tr {
+    String? translated;
+    try {
+      translated = IndependentLocalization.instance!._decodedLocaleJson![
+          IndependentLocalization.instance!._currentLocale!]![this];
+    } catch (e) {
+      Logger.log('[E]' + e.toString());
+    }
+    if (translated == null) {
+      Logger.log('[E] Empty translated value');
+      return this;
+    } else {
+      return translated;
+    }
   }
 }
 
