@@ -161,7 +161,7 @@ class IndependentLocalization {
       throw LanguageNotDefinedException();
     } else {
       _currentLocale = locale;
-      Provider.of<LanguageStateProvider>(context).currentLocale =
+      Provider.of<LanguageStateProvider>(context, listen: false).currentLocale =
           _currentLocale!;
       pref.setString("curLangCode", _currentLocale!.languageCode);
       pref.setString("curCtryCode", _currentLocale!.countryCode!);
