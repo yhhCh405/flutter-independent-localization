@@ -19,10 +19,23 @@
     "other key" : "Others"
 }
 ```
+4. Assign these assets in `pubspec.yaml`.
+```yaml
+flutter:
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
 
-4. In main() method, initialize `IndependentLocalization` like this:
+  # To add assets to your application, aPdd an assets section, like this:
+  assets:
+    - assets/lang/ # <---- add this
+```
+
+5. In main() method, initialize `IndependentLocalization` like this:
 
 ```dart
+    WidgetsFlutterBinding.ensureInitialized();
     await IndependentLocalization(
             fallbackLocale: LocalizationManager.defaultLocale,
             localesJson: await LocalizationManager.localeJson)
