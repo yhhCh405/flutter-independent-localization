@@ -128,9 +128,10 @@ class IndependentLocalization {
     } else {
       _currentLocale = locale;
       if (!_currLangStreamCtrl.isClosed) {
+        print("Emitted $_currentLocale");
         _currLangStreamCtrl.add(_currentLocale);
       }
-      _currLangStreamCtrl.add(_currentLocale);
+      print("Lang changed");
       pref.setString("curLangCode", _currentLocale!.languageCode);
       pref.setString("curCtryCode", _currentLocale!.countryCode!);
     }
