@@ -5,13 +5,14 @@ version: 0.0.1
 homepage: https://www.facebook.com/Ch405.yhh/
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
   # flutter: ">=1.17.0"
 
 dependencies:
+  devicelocale: ^0.4.1
   flutter:
     sdk: flutter
-  devicelocale: ^0.4.1
+  provider: ^6.0.2
   shared_preferences: ^2.0.5
 
 dev_dependencies:
@@ -19,4 +20,3 @@ dev_dependencies:
     sdk: flutter
 
 flutter: null
-

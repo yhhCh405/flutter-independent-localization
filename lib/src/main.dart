@@ -2,9 +2,31 @@ import 'dart:convert';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:flutter/material.dart';
 import 'package:independent_localization/src/Exceptions/language_not_defined_exception.dart';
+import 'package:independent_localization/src/Providers/lang_state_provider.dart';
 import 'package:independent_localization/src/config.dart';
 import 'package:independent_localization/src/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+extension WidExt on BuildContext {
+  String tr(String key, [String? defaultValue]) {
+    String? translated;
+    try {
+      // translated = IndependentLocalization.instance!._decodedLocaleJson![
+      //     IndependentLocalization.instance!._currentLocale!]![key];
+      translated = IndependentLocalization.instance!._decodedLocaleJson![
+          Provider.of<LanguageStateProvider>(this).currentLocale]![key];
+    } catch (e) {
+      Logger.log('[E]' + e.toString());
+    }
+    if (translated == null) {
+      Logger.log('[E] Empty translated value');
+      return defaultValue ?? key;
+    } else {
+      return translated;
+    }
+  }
+}
 
 String tr(String key, [String? defaultValue]) {
   String? translated;
@@ -37,6 +59,23 @@ extension TrExt on String {
     } else {
       return translated;
     }
+  }
+}
+
+class IndependentLocalizationWidget extends StatelessWidget {
+  final Widget child;
+  const IndependentLocalizationWidget({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => LanguageStateProvider(
+          IndependentLocalization.instance!.fallbackLocale!),
+      child: child,
+    );
   }
 }
 
@@ -117,11 +156,13 @@ class IndependentLocalization {
     return _instance;
   }
 
-  void changeLocale(Locale locale) {
+  void changeLocale(BuildContext context, Locale locale) {
     if (!_decodedLocaleJson!.containsKey(locale)) {
       throw LanguageNotDefinedException();
     } else {
       _currentLocale = locale;
+      Provider.of<LanguageStateProvider>(context).currentLocale =
+          _currentLocale!;
       pref.setString("curLangCode", _currentLocale!.languageCode);
       pref.setString("curCtryCode", _currentLocale!.countryCode!);
     }
