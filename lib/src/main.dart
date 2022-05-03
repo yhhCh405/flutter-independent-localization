@@ -7,38 +7,11 @@ import 'package:independent_localization/src/config.dart';
 import 'package:independent_localization/src/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String tr(String key, [String? defaultValue]) {
-  String? translated;
-  try {
-    translated = IndependentLocalization.instance!._decodedLocaleJson![
-        IndependentLocalization.instance!._currentLocale!]![key];
-  } catch (e) {
-    Logger.log('[E]' + e.toString());
-  }
-  if (translated == null) {
-    Logger.log('[E] Empty translated value');
-    return defaultValue ?? key;
-  } else {
-    return translated;
-  }
-}
+String tr(String key, [String? defaultValue]) =>
+    IndependentLocalization.instance!.tr(key);
 
 extension TrExt on String {
-  String get tr {
-    String? translated;
-    try {
-      translated = IndependentLocalization.instance!._decodedLocaleJson![
-          IndependentLocalization.instance!._currentLocale!]![this];
-    } catch (e) {
-      Logger.log('[E]' + e.toString());
-    }
-    if (translated == null) {
-      Logger.log('[E] Empty translated value');
-      return this;
-    } else {
-      return translated;
-    }
-  }
+  String get tr => IndependentLocalization.instance!.tr(this);
 }
 
 class IndependentLocalization {
@@ -120,6 +93,21 @@ class IndependentLocalization {
     }
     _instance = this;
     return _instance;
+  }
+
+  String tr(String key) {
+    String? translated;
+    try {
+      translated = _decodedLocaleJson![_currentLocale!]![key];
+    } catch (e) {
+      Logger.log('[E]' + e.toString());
+    }
+    if (translated == null) {
+      Logger.log('[E] Empty translated value');
+      return key;
+    } else {
+      return translated;
+    }
   }
 
   void changeLocale(Locale locale) {
