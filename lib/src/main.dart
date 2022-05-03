@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,10 @@ class IndependentLocalization {
   final bool? openLogChannel;
 
   final Locale? fallbackLocale;
+
+  final StreamController<Locale?> _currLangStreamCtrl =
+      StreamController.broadcast();
+  Stream<Locale?> get currentLangChanges => _currLangStreamCtrl.stream;
 
   Locale? get currentLocale => _currentLocale;
 
@@ -122,8 +127,16 @@ class IndependentLocalization {
       throw LanguageNotDefinedException();
     } else {
       _currentLocale = locale;
+      if (!_currLangStreamCtrl.isClosed) {
+        _currLangStreamCtrl.add(_currentLocale);
+      }
+      _currLangStreamCtrl.add(_currentLocale);
       pref.setString("curLangCode", _currentLocale!.languageCode);
       pref.setString("curCtryCode", _currentLocale!.countryCode!);
     }
+  }
+
+  void dispose() {
+    _currLangStreamCtrl.close();
   }
 }
