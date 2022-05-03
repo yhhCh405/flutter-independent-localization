@@ -16,6 +16,7 @@ extension WidExt on BuildContext {
       //     IndependentLocalization.instance!._currentLocale!]![key];
       translated = IndependentLocalization.instance!._decodedLocaleJson![
           Provider.of<LanguageStateProvider>(this).currentLocale]![key];
+      print(translated);
     } catch (e) {
       Logger.log('[E]' + e.toString());
     }
